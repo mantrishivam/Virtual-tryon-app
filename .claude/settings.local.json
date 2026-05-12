@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:yce.perfectcorp.com)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"pattern\":\"test\"}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\"}' https://yce-api-01.makeupar.com/s2s/v2.0/task/nail-vto)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\"}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-style)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -F 'file=@/etc/hostname;type=image/jpeg' https://yce-api-01.makeupar.com/s2s/v2.0/file/hair-color)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"pattern\":{\"name\":\"test\"}}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"effect_type\":\"nail_polish\",\"effects\":[],\"version\":\"1\"}' https://yce-api-01.makeupar.com/s2s/v2.0/task/nail-vto)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"files\":[]}' https://yce-api-01.makeupar.com/s2s/v2.0/file/hair-color)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"files\":[{\"url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\"}]}' https://yce-api-01.makeupar.com/s2s/v2.0/file/hair-color)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"pattern\":{\"name\":\"full\"}}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"pattern\":{\"name\":\"full\"},\"color\":\"#8B4513\"}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color)",
+      "Bash(curl -s -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' https://yce-api-01.makeupar.com/s2s/v2.0/task/nail-vto/4A9ZwctK5adKCd_x698gxEhuJiL_FURzG8NiK0rwhkODzrd85tjCbIalh44pNbuF)",
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"files\":[{\"content_type\":\"image/jpeg\",\"file_name\":\"test.jpg\",\"file_size\":100000}]}' https://yce-api-01.makeupar.com/s2s/v2.0/file/hair-color)"
+    ]
+  }
+}

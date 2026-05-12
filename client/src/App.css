@@ -1,0 +1,48 @@
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.app-header p {
+  color: #666;
+  margin-top: 4px;
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.error-msg {
+  margin-top: 12px;
+  color: #c0392b;
+  font-size: 0.9rem;
+  background: #fdecea;
+  padding: 8px 12px;
+  border-radius: 6px;
+}

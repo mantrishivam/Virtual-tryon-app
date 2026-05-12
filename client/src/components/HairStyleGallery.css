@@ -1,0 +1,83 @@
+.gallery-loading,
+.gallery-error {
+  text-align: center;
+  padding: 16px;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.gallery-error { color: #c0392b; }
+
+.gallery-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.gallery-item {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.15s;
+  background: #f5f5f5;
+}
+
+.gallery-item:hover { border-color: #aaa; }
+
+.gallery-item.selected { border-color: #222; }
+
+.gallery-item img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-label {
+  font-size: 0.68rem;
+  text-align: center;
+  padding: 3px 4px;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #fff;
+}
+
+.gallery-difficulty {
+  font-size: 0.6rem;
+  text-align: center;
+  padding: 2px 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.gallery-difficulty.easy    { background: #d4edda; color: #155724; }
+.gallery-difficulty.medium  { background: #fff3cd; color: #856404; }
+.gallery-difficulty.complex { background: #f8d7da; color: #721c24; }
+
+.btn-load-more {
+  width: 100%;
+  padding: 8px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.btn-load-more:hover:not(:disabled) { background: #e4e4e4; }
+.btn-load-more:disabled { opacity: 0.6; cursor: not-allowed; }
