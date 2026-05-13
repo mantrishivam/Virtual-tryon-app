@@ -17,7 +17,8 @@ async function normalizeToJpeg(file) {
   try {
     const jpeg = await sharp(file.buffer)
       .rotate()
-      .jpeg({ quality: 92 })
+      .resize(2000, 2000, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 88 })
       .toBuffer();
 
     console.log('[normalizeImage] output JPEG:', jpeg.length, 'bytes');

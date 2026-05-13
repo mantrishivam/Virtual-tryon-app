@@ -9,7 +9,8 @@ export default function ResultViewer({ result, loading }) {
         {loading && (
           <div className="result-loading">
             <div className="spinner" />
-            <p>Processing with Perfect Corp AI…</p>
+            <p>Generating your look…</p>
+            <p className="loading-sub">This usually takes 15–30 seconds</p>
           </div>
         )}
 

@@ -43,11 +43,16 @@ export async function applyHairStyleTryon(imageFile, { styleIndex }) {
   }
 }
 
-export async function applyNailTryon(imageFile, { nailColor, nailTexture }) {
+export async function applyNailTryon(imageFile, { nailColor, nailTexture, nailEffectType, nailShape, nailLength }) {
   const formData = new FormData();
   formData.append('image', imageFile);
   formData.append('nailColor', nailColor);
-  formData.append('nailTexture', nailTexture);
+  formData.append('texture', nailTexture);
+  formData.append('effectType', nailEffectType);
+  if (nailEffectType === 'press_on_nails') {
+    formData.append('nailShape', nailShape);
+    formData.append('nailLength', String(nailLength));
+  }
 
   try {
     const response = await axios.post(`${BASE_URL}/api/nail-tryon`, formData, {

@@ -7,6 +7,16 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Perfect Corp Camera Kit SDK (overlay container must exist in DOM) -->
+    <div id="YMK-module"></div>
+    <script>
+      window.YMKAsyncInit = function () { window.ymkReady = true; };
+    </script>
+    <script
+      src="https://plugins-media.makeupar.com/v2.5-camera-kit/sdk.js"
+      async
+      defer
+    ></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

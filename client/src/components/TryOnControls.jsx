@@ -1,4 +1,5 @@
 import HairStyleGallery from './HairStyleGallery';
+import nailShapes from '../data/nailShapes';
 import './TryOnControls.css';
 
 const HAIR_PATTERNS = [
@@ -19,7 +20,7 @@ const HAIR_COLORS = [
   { value: '#888888', label: 'Gray' },
 ];
 
-const NAIL_TEXTURES = [
+const NAIL_POLISH_TEXTURES = [
   { value: 'cream',          label: 'Cream' },
   { value: 'matte',          label: 'Matte' },
   { value: 'sheer',          label: 'Sheer' },
@@ -29,6 +30,13 @@ const NAIL_TEXTURES = [
   { value: 'shimmer_fine',   label: 'Shimmer Fine' },
   { value: 'shimmer_coarse', label: 'Shimmer Coarse' },
   { value: 'textured',       label: 'Textured' },
+];
+
+// Press-on nails only support these three textures per Perfect Corp API
+const PRESS_ON_TEXTURES = [
+  { value: 'cream',    label: 'Cream' },
+  { value: 'matte',    label: 'Matte' },
+  { value: 'metallic', label: 'Metallic' },
 ];
 
 const NAIL_COLORS = [
@@ -54,8 +62,14 @@ export default function TryOnControls({
   // nail
   nailColor, setNailColor,
   nailTexture, setNailTexture,
+  nailEffectType, setNailEffectType,
+  nailShape, setNailShape,
+  nailLength, setNailLength,
   onApply, loading, disabled,
 }) {
+  const isPressOn  = nailEffectType === 'press_on_nails';
+  const textures   = isPressOn ? PRESS_ON_TEXTURES : NAIL_POLISH_TEXTURES;
+  const safeTexture = textures.find(t => t.value === nailTexture) ? nailTexture : textures[0].value;
   return (
     <div className="controls-wrapper">
       <h2 className="panel-title">2. Customize</h2>
@@ -121,8 +135,28 @@ export default function TryOnControls({
       {/* ── Nail ── */}
       {feature === 'nail' && (
         <>
+          {/* Effect type toggle */}
           <div className="field">
-            <label htmlFor="nail-color">Nail Color</label>
+            <label>Nail Type</label>
+            <div className="toggle-group">
+              <button
+                className={`toggle-btn ${!isPressOn ? 'active' : ''}`}
+                onClick={() => setNailEffectType('nail_polish')}
+              >
+                Nail Polish
+              </button>
+              <button
+                className={`toggle-btn ${isPressOn ? 'active' : ''}`}
+                onClick={() => setNailEffectType('press_on_nails')}
+              >
+                Press-On Nails
+              </button>
+            </div>
+          </div>
+
+          {/* Color picker */}
+          <div className="field">
+            <label htmlFor="nail-color">Color</label>
             <select id="nail-color" value={nailColor} onChange={e => setNailColor(e.target.value)}>
               {NAIL_COLORS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
@@ -132,12 +166,52 @@ export default function TryOnControls({
               <span className="color-hex">{nailColor}</span>
             </div>
           </div>
+
+          {/* Texture — filtered by effect type */}
           <div className="field">
-            <label htmlFor="nail-texture">Finish / Texture</label>
-            <select id="nail-texture" value={nailTexture} onChange={e => setNailTexture(e.target.value)}>
-              {NAIL_TEXTURES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            <label htmlFor="nail-texture">Finish</label>
+            <select id="nail-texture" value={safeTexture} onChange={e => setNailTexture(e.target.value)}>
+              {textures.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
+
+          {/* Press-on only: shape + length */}
+          {isPressOn && (
+            <>
+              <div className="field">
+                <label htmlFor="nail-shape">Shape</label>
+                <select id="nail-shape" value={nailShape} onChange={e => setNailShape(e.target.value)}>
+                  {nailShapes.map(s => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
+                </select>
+                <p className="field-hint">
+                  {nailShapes.find(s => s.value === nailShape)?.description}
+                </p>
+              </div>
+
+              <div className="field">
+                <label htmlFor="nail-length">
+                  Length — <span className="length-value">{parseFloat(nailLength).toFixed(1)}x</span>
+                </label>
+                <input
+                  id="nail-length"
+                  type="range"
+                  min="0.8"
+                  max="2.15"
+                  step="0.05"
+                  value={nailLength}
+                  onChange={e => setNailLength(parseFloat(e.target.value))}
+                  className="length-slider"
+                />
+                <div className="length-labels">
+                  <span>Short</span>
+                  <span>Natural</span>
+                  <span>Long</span>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
 

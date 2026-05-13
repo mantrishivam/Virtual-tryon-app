@@ -1,43 +1,87 @@
+/* ── Base (mobile-first) ────────────────────────────────────────────────── */
+
 .app {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 16px 16px 80px; /* bottom padding for fixed StepNav */
 }
 
 .app-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .app-header h1 {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 700;
 }
 
 .app-header p {
   color: #666;
   margin-top: 4px;
-}
-
-.app-main {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
-}
-
-@media (max-width: 768px) {
-  .app-main {
-    grid-template-columns: 1fr;
-  }
+  font-size: 0.9rem;
 }
 
 .panel {
   background: #fff;
   border-radius: 10px;
-  padding: 24px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  padding: 20px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Mobile: show only the active step panel */
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Hide inactive panels on mobile */
+.app-main[data-step="upload"]    .panel-customize,
+.app-main[data-step="upload"]    .panel-result,
+.app-main[data-step="customize"] .panel-upload,
+.app-main[data-step="customize"] .panel-result,
+.app-main[data-step="result"]    .panel-upload,
+.app-main[data-step="result"]    .panel-customize {
+  display: none;
+}
+
+/* ── Tablet (768px+): show all panels stacked, remove StepNav ─────────── */
+@media (min-width: 768px) {
+  .app {
+    padding: 24px 16px; /* no bottom offset needed — StepNav hidden */
+  }
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .app-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Show all panels regardless of step */
+  .app-main .panel {
+    display: block !important;
+  }
+
+  .panel {
+    padding: 24px;
+  }
+}
+
+/* ── Desktop (1024px+): 3-column grid ────────────────────────────────── */
+@media (min-width: 1024px) {
+  .app-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+}
+
+/* ── Error message ───────────────────────────────────────────────────── */
 .error-msg {
   margin-top: 12px;
   color: #c0392b;

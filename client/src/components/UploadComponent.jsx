@@ -1,94 +1,79 @@
 import { useRef, useState, useEffect } from 'react';
+import { useCameraKit } from '../hooks/useCameraKit';
+import { validateImage } from '../utils/validateImage';
 import './UploadComponent.css';
 
-export default function UploadComponent({ onFileSelect, previewUrl }) {
-  const [mode, setMode]           = useState('upload');  // 'upload' | 'camera'
-  const [cameraError, setCameraError] = useState(null);
-  const [streaming, setStreaming] = useState(false);
+const TIPS = {
+  hairstyle: [
+    'Face the camera directly — full face visible',
+    'Use good, even lighting (avoid shadows)',
+    'Keep hair away from face if possible',
+    'Hold the phone steady — avoid blur',
+  ],
+  nail: [
+    'Show the BACK of one hand only',
+    'Spread all 5 fingers clearly apart',
+    'Keep hand flat and nails unobstructed',
+    'Use good lighting — avoid shadows on fingers',
+    'Fill at least half the frame with your hand',
+  ],
+};
+
+export default function UploadComponent({ onFileSelect, previewUrl, feature }) {
+  const [mode, setMode]                       = useState('upload');
+  const [validationError, setValidationError] = useState(null);
 
   const inputRef  = useRef(null);
-  const videoRef  = useRef(null);
-  const streamRef = useRef(null);  // holds the MediaStream to stop it later
+  const camera    = useCameraKit();
 
-  // Stop camera when switching away from camera mode
+  // Close camera when leaving camera mode or on unmount
   useEffect(() => {
-    if (mode !== 'camera') stopCamera();
-  }, [mode]);
+    if (mode !== 'camera') camera.close();
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Cleanup on unmount
-  useEffect(() => () => stopCamera(), []);
+  useEffect(() => () => camera.close(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function stopCamera() {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
-    }
-    setStreaming(false);
+  // Called by both SDK (faceDetectionCaptured) and getUserMedia capture button
+  async function handleCaptured(file) {
+    setValidationError(null);
+    // SDK path already validates quality; still run size / format checks
+    const check = await validateImage(file);
+    if (!check.ok) { setValidationError(check.reason); return; }
+    onFileSelect(file, URL.createObjectURL(file));
+    camera.close();
+    setMode('upload');
   }
 
-  async function startCamera() {
-    setCameraError(null);
+  async function capturePhoto() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
-      });
-      streamRef.current = stream;
-      videoRef.current.srcObject = stream;
-      await videoRef.current.play();
-      setStreaming(true);
+      const file = await camera.capture();
+      await handleCaptured(file);
     } catch (err) {
-      if (err.name === 'NotAllowedError') {
-        setCameraError('Camera access denied. Please allow camera permissions and try again.');
-      } else if (err.name === 'NotFoundError') {
-        setCameraError('No camera found on this device.');
-      } else {
-        setCameraError('Could not access camera: ' + err.message);
-      }
+      setValidationError(err.message);
     }
   }
 
-  function capturePhoto() {
-    const video = videoRef.current;
-
-    // Guard: video must have real dimensions before capture
-    if (!video.videoWidth || !video.videoHeight) {
-      alert('Camera not ready yet, please wait a moment and try again.');
-      return;
-    }
-
-    const canvas = document.createElement('canvas');
-    canvas.width  = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-
-    canvas.toBlob(blob => {
-      // canvas.toBlob can return null if the canvas is empty or tainted
-      if (!blob || blob.size === 0) {
-        alert('Failed to capture image. Please try again.');
-        return;
-      }
-      const file      = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' });
-      const objectUrl = URL.createObjectURL(blob);
-      onFileSelect(file, objectUrl);
-      stopCamera();
-      setMode('upload');
-    }, 'image/jpeg', 0.92);
-  }
-
-  function handleFileChange(e) {
+  async function handleFileChange(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) { alert('Please select a valid image file.'); return; }
+    setValidationError(null);
+    const check = await validateImage(file);
+    if (!check.ok) { setValidationError(check.reason); e.target.value = ''; return; }
     onFileSelect(file, URL.createObjectURL(file));
   }
 
-  function handleDrop(e) {
+  async function handleDrop(e) {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) { alert('Please drop a valid image file.'); return; }
+    setValidationError(null);
+    const check = await validateImage(file);
+    if (!check.ok) { setValidationError(check.reason); return; }
     onFileSelect(file, URL.createObjectURL(file));
   }
+
+  const tips      = TIPS[feature] || TIPS.hairstyle;
+  const tipsLabel = feature === 'nail' ? 'Hand photo tips:' : 'For best results:';
 
   return (
     <div className="upload-wrapper">
@@ -104,11 +89,24 @@ export default function UploadComponent({ onFileSelect, previewUrl }) {
         </button>
         <button
           className={`mode-btn ${mode === 'camera' ? 'active' : ''}`}
-          onClick={() => { setMode('camera'); startCamera(); }}
+          onClick={() => { setMode('camera'); camera.open(feature, handleCaptured); }}
         >
           Live Camera
         </button>
       </div>
+
+      {/* Tips — always visible */}
+      <div className="camera-tips">
+        <span>{tipsLabel}</span>
+        <ul>
+          {tips.map((tip, i) => <li key={i}>{tip}</li>)}
+        </ul>
+      </div>
+
+      {/* Validation / quality error */}
+      {validationError && (
+        <div className="validation-error">{validationError}</div>
+      )}
 
       {/* ── Upload mode ── */}
       {mode === 'upload' && (
@@ -136,7 +134,7 @@ export default function UploadComponent({ onFileSelect, previewUrl }) {
           <input
             ref={inputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             style={{ display: 'none' }}
             onChange={handleFileChange}
           />
@@ -152,18 +150,27 @@ export default function UploadComponent({ onFileSelect, previewUrl }) {
       {/* ── Camera mode ── */}
       {mode === 'camera' && (
         <div className="camera-wrapper">
-          {cameraError ? (
-            <div className="camera-error">{cameraError}</div>
+          {camera.error ? (
+            <div className="camera-error">{camera.error}</div>
+          ) : camera.usingSDK ? (
+            /* SDK is open full-screen — its own overlay handles the camera UI */
+            <div className="camera-loading">
+              Camera overlay is open. Position your face and wait for auto-capture.
+            </div>
           ) : (
+            /* getUserMedia fallback — used for nail mode and when SDK unavailable */
             <>
-              <video ref={videoRef} className="camera-feed" playsInline muted />
-              {streaming && (
-                <button className="btn-capture" onClick={capturePhoto}>
-                  Capture Photo
-                </button>
-              )}
-              {!streaming && !cameraError && (
-                <div className="camera-loading">Starting camera…</div>
+              <video ref={camera.videoRef} className="camera-feed" playsInline muted />
+              {!camera.streaming && <div className="camera-loading">Starting camera…</div>}
+              {camera.streaming && (
+                <div className="camera-actions">
+                  <button className="btn-switch-camera" onClick={camera.switchCamera}>
+                    ⇄ Switch
+                  </button>
+                  <button className="btn-capture" onClick={capturePhoto}>
+                    Capture Photo
+                  </button>
+                </div>
               )}
             </>
           )}

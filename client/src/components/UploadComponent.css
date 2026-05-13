@@ -4,13 +4,6 @@
   gap: 12px;
 }
 
-.panel-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 4px;
-}
-
 /* Mode toggle */
 .mode-toggle {
   display: flex;
@@ -22,13 +15,15 @@
 
 .mode-btn {
   flex: 1;
-  padding: 7px 10px;
+  padding: 0 10px;
+  min-height: var(--touch-target);
   background: #fff;
   border: none;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #555;
   transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mode-btn:first-child { border-right: 1px solid #ccc; }
@@ -38,12 +33,45 @@
   color: #fff;
 }
 
+/* Tips — always visible */
+.camera-tips {
+  background: #fffbea;
+  border: 1px solid #f0d060;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: #6b5000;
+}
+
+.camera-tips span {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.camera-tips ul {
+  margin: 0;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Validation error */
+.validation-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  background: #fdecea;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
 /* Upload / drop zone */
 .drop-zone {
   border: 2px dashed #ccc;
   border-radius: 8px;
   cursor: pointer;
-  min-height: 200px;
+  min-height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,22 +114,30 @@
 .camera-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
+}
+
+.camera-container {
+  width: 100%;
+  min-height: 220px;
+  border-radius: 8px;
+  background: #000;
+  overflow: hidden;
+  position: relative;
 }
 
 .camera-feed {
   width: 100%;
-  max-height: 260px;
-  border-radius: 8px;
-  background: #000;
+  height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .camera-loading {
   color: #999;
   font-size: 0.9rem;
   padding: 40px 0;
+  text-align: center;
 }
 
 .camera-error {
@@ -113,9 +149,32 @@
   width: 100%;
 }
 
+/* Camera action buttons row */
+.camera-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-switch-camera {
+  padding: 0 14px;
+  min-height: var(--touch-target);
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-switch-camera:hover { background: #f0f0f0; }
+
 .btn-capture {
-  width: 100%;
-  padding: 10px;
+  flex: 1;
+  min-height: var(--touch-target);
+  padding: 0 10px;
   background: #222;
   color: #fff;
   border: none;
@@ -123,6 +182,8 @@
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-capture:hover { background: #444; }
@@ -131,11 +192,14 @@
   background: transparent;
   border: 1px solid #999;
   border-radius: 6px;
-  padding: 6px 14px;
+  padding: 0 14px;
+  min-height: var(--touch-target);
   cursor: pointer;
   font-size: 0.85rem;
   color: #555;
   align-self: flex-start;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-secondary:hover { background: #f0f0f0; }
