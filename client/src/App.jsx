@@ -4,21 +4,17 @@ import TryOnControls from './components/TryOnControls';
 import ResultViewer from './components/ResultViewer';
 import StepNav from './components/StepNav';
 import { applyHairTryon, applyHairStyleTryon, applyNailTryon } from './services/api';
-import './App.css';
 
 export default function App() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [previewUrl, setPreviewUrl]     = useState(null);
   const [feature, setFeature]           = useState('hairstyle');
 
-  // Hair color
   const [hairColor, setHairColor]       = useState('#8B4513');
   const [patternName, setPatternName]   = useState('full');
 
-  // Hair style
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
-  // Nail
   const [nailColor, setNailColor]           = useState('#FF0000');
   const [nailTexture, setNailTexture]       = useState('cream');
   const [nailEffectType, setNailEffectType] = useState('nail_polish');
@@ -29,8 +25,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(null);
 
-  // Mobile step navigation
-  const [step, setStep]               = useState('upload');
+  const [step, setStep]             = useState('upload');
   const [completedSteps, setCompletedSteps] = useState(new Set());
 
   function markComplete(stepId) {
@@ -74,18 +69,21 @@ export default function App() {
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Virtual Try-On</h1>
-        <p>Powered by GlamIQ</p>
+    <div className="max-w-[1100px] mx-auto px-4 pt-4 pb-20 md:py-6">
+      <header className="text-center mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-4xl font-bold">Virtual Try-On</h1>
+        <p className="text-gray-500 mt-1 text-sm">Powered by GlamIQ</p>
       </header>
 
-      <main className="app-main" data-step={step}>
-        <section className="panel panel-upload">
+      <main
+        className="flex flex-col gap-0 md:flex-col md:gap-6 lg:grid lg:grid-cols-3 lg:gap-6"
+        data-step={step}
+      >
+        <section className="bg-white rounded-xl p-5 md:p-6 shadow-sm panel-upload">
           <UploadComponent onFileSelect={handleFileSelect} previewUrl={previewUrl} feature={feature} />
         </section>
 
-        <section className="panel panel-customize">
+        <section className="bg-white rounded-xl p-5 md:p-6 shadow-sm panel-customize">
           <TryOnControls
             feature={feature}                   setFeature={setFeature}
             hairColor={hairColor}               setHairColor={setHairColor}
@@ -100,10 +98,12 @@ export default function App() {
             loading={loading}
             disabled={!uploadedFile}
           />
-          {error && <p className="error-msg">{error}</p>}
+          {error && (
+            <p className="mt-3 text-red-600 text-sm bg-red-50 px-3 py-2 rounded-md">{error}</p>
+          )}
         </section>
 
-        <section className="panel panel-result">
+        <section className="bg-white rounded-xl p-5 md:p-6 shadow-sm panel-result">
           <ResultViewer result={result} loading={loading} />
         </section>
       </main>

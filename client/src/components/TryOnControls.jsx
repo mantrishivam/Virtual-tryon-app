@@ -1,6 +1,5 @@
 import HairStyleGallery from './HairStyleGallery';
 import nailShapes from '../data/nailShapes';
-import './TryOnControls.css';
 
 const HAIR_PATTERNS = [
   { value: 'full',  label: 'Full Color' },
@@ -32,7 +31,6 @@ const NAIL_POLISH_TEXTURES = [
   { value: 'textured',       label: 'Textured' },
 ];
 
-// Press-on nails only support these three textures per Perfect Corp API
 const PRESS_ON_TEXTURES = [
   { value: 'cream',    label: 'Cream' },
   { value: 'matte',    label: 'Matte' },
@@ -52,14 +50,14 @@ const NAIL_COLORS = [
   { value: '#FFD700', label: 'Gold' },
 ];
 
+const labelCls = 'text-xs font-semibold text-gray-500 uppercase tracking-wide';
+const selectCls = 'px-3 py-2 border border-gray-300 rounded-md text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-800';
+
 export default function TryOnControls({
   feature, setFeature,
-  // hair color
   hairColor, setHairColor,
   patternName, setPatternName,
-  // hair style
   selectedTemplate, setSelectedTemplate,
-  // nail
   nailColor, setNailColor,
   nailTexture, setNailTexture,
   nailEffectType, setNailEffectType,
@@ -67,44 +65,48 @@ export default function TryOnControls({
   nailLength, setNailLength,
   onApply, loading, disabled,
 }) {
-  const isPressOn  = nailEffectType === 'press_on_nails';
-  const textures   = isPressOn ? PRESS_ON_TEXTURES : NAIL_POLISH_TEXTURES;
+  const isPressOn   = nailEffectType === 'press_on_nails';
+  const textures    = isPressOn ? PRESS_ON_TEXTURES : NAIL_POLISH_TEXTURES;
   const safeTexture = textures.find(t => t.value === nailTexture) ? nailTexture : textures[0].value;
+
   return (
-    <div className="controls-wrapper">
-      <h2 className="panel-title">2. Customize</h2>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-base font-bold mb-1">2. Customize</h2>
 
       {/* Feature toggle */}
-      <div className="field">
-        <label>Feature</label>
-        <div className="toggle-group">
-          <button className={`toggle-btn ${feature === 'hairstyle' ? 'active' : ''}`} onClick={() => setFeature('hairstyle')}>
-            Hair Style
-          </button>
-          <button className={`toggle-btn ${feature === 'nail' ? 'active' : ''}`} onClick={() => setFeature('nail')}>
-            Nail
-          </button>
+      <div className="flex flex-col gap-1.5">
+        <label className={labelCls}>Feature</label>
+        <div className="flex gap-1.5 flex-wrap">
+          {[['hairstyle','Hair Style'],['nail','Nail']].map(([val, lbl]) => (
+            <button
+              key={val}
+              className={`flex-1 py-2 min-h-11 border rounded-md text-sm transition-all cursor-pointer ${feature === val ? 'bg-gray-900 text-white border-gray-900' : 'bg-white border-gray-300 hover:bg-gray-50'}`}
+              onClick={() => setFeature(val)}
+            >
+              {lbl}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* ── Hair Color ── */}
       {feature === 'hair' && (
         <>
-          <div className="field">
-            <label htmlFor="hair-pattern">Pattern</label>
-            <select id="hair-pattern" value={patternName} onChange={e => setPatternName(e.target.value)}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="hair-pattern" className={labelCls}>Pattern</label>
+            <select id="hair-pattern" className={selectCls} value={patternName} onChange={e => setPatternName(e.target.value)}>
               {HAIR_PATTERNS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
             </select>
           </div>
-          <div className="field">
-            <label htmlFor="hair-color">Hair Color</label>
-            <select id="hair-color" value={hairColor} onChange={e => setHairColor(e.target.value)}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="hair-color" className={labelCls}>Hair Color</label>
+            <select id="hair-color" className={selectCls} value={hairColor} onChange={e => setHairColor(e.target.value)}>
               {HAIR_COLORS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
-            <div className="color-row">
-              <span className="color-swatch" style={{ background: hairColor }} />
-              <input type="color" value={hairColor} onChange={e => setHairColor(e.target.value)} title="Pick custom color" />
-              <span className="color-hex">{hairColor}</span>
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="inline-block w-6 h-6 rounded border border-gray-300 shrink-0" style={{ background: hairColor }} />
+              <input type="color" className="w-8 h-7 p-0 border border-gray-300 rounded cursor-pointer" value={hairColor} onChange={e => setHairColor(e.target.value)} title="Pick custom color" />
+              <span className="text-xs text-gray-500 font-mono">{hairColor}</span>
             </div>
           </div>
         </>
@@ -112,102 +114,86 @@ export default function TryOnControls({
 
       {/* ── Hair Style ── */}
       {feature === 'hairstyle' && (
-        <div className="field">
-          <label>Select a Style</label>
+        <div className="flex flex-col gap-1.5">
+          <label className={labelCls}>Select a Style</label>
           {selectedTemplate && (
-            <div className="selected-template">
-              <img src={selectedTemplate.image} alt={selectedTemplate.name} />
-              <div className="selected-template-info">
-                <strong>{selectedTemplate.name}</strong>
-                <span>{selectedTemplate.priceRange}</span>
-                <span>{selectedTemplate.duration} · {selectedTemplate.difficulty}</span>
-                <p>{selectedTemplate.description}</p>
+            <div className="flex items-start gap-2.5 p-2.5 bg-gray-100 rounded-lg mb-2 border border-gray-200">
+              <img src={selectedTemplate.image} alt={selectedTemplate.name} className="w-[52px] h-[68px] object-cover rounded shrink-0" />
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <strong className="text-sm font-bold text-gray-900 truncate">{selectedTemplate.name}</strong>
+                <span className="text-xs text-gray-500">{selectedTemplate.priceRange}</span>
+                <span className="text-xs text-gray-500">{selectedTemplate.duration} · {selectedTemplate.difficulty}</span>
+                <p className="text-[11px] text-gray-400 m-0 leading-snug line-clamp-2">{selectedTemplate.description}</p>
               </div>
             </div>
           )}
-          <HairStyleGallery
-            selectedId={selectedTemplate?.index}
-            onSelect={setSelectedTemplate}
-          />
+          <HairStyleGallery selectedId={selectedTemplate?.index} onSelect={setSelectedTemplate} />
         </div>
       )}
 
       {/* ── Nail ── */}
       {feature === 'nail' && (
         <>
-          {/* Effect type toggle */}
-          <div className="field">
-            <label>Nail Type</label>
-            <div className="toggle-group">
-              <button
-                className={`toggle-btn ${!isPressOn ? 'active' : ''}`}
-                onClick={() => setNailEffectType('nail_polish')}
-              >
-                Nail Polish
-              </button>
-              <button
-                className={`toggle-btn ${isPressOn ? 'active' : ''}`}
-                onClick={() => setNailEffectType('press_on_nails')}
-              >
-                Press-On Nails
-              </button>
+          <div className="flex flex-col gap-1.5">
+            <label className={labelCls}>Nail Type</label>
+            <div className="flex gap-1.5 flex-wrap">
+              {[['nail_polish','Nail Polish'],['press_on_nails','Press-On Nails']].map(([val, lbl]) => (
+                <button
+                  key={val}
+                  className={`flex-1 py-2 min-h-11 border rounded-md text-sm transition-all cursor-pointer ${nailEffectType === val ? 'bg-gray-900 text-white border-gray-900' : 'bg-white border-gray-300 hover:bg-gray-50'}`}
+                  onClick={() => setNailEffectType(val)}
+                >
+                  {lbl}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Color picker */}
-          <div className="field">
-            <label htmlFor="nail-color">Color</label>
-            <select id="nail-color" value={nailColor} onChange={e => setNailColor(e.target.value)}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="nail-color" className={labelCls}>Color</label>
+            <select id="nail-color" className={selectCls} value={nailColor} onChange={e => setNailColor(e.target.value)}>
               {NAIL_COLORS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
-            <div className="color-row">
-              <span className="color-swatch" style={{ background: nailColor }} />
-              <input type="color" value={nailColor} onChange={e => setNailColor(e.target.value)} title="Pick custom color" />
-              <span className="color-hex">{nailColor}</span>
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="inline-block w-6 h-6 rounded border border-gray-300 shrink-0" style={{ background: nailColor }} />
+              <input type="color" className="w-8 h-7 p-0 border border-gray-300 rounded cursor-pointer" value={nailColor} onChange={e => setNailColor(e.target.value)} title="Pick custom color" />
+              <span className="text-xs text-gray-500 font-mono">{nailColor}</span>
             </div>
           </div>
 
-          {/* Texture — filtered by effect type */}
-          <div className="field">
-            <label htmlFor="nail-texture">Finish</label>
-            <select id="nail-texture" value={safeTexture} onChange={e => setNailTexture(e.target.value)}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="nail-texture" className={labelCls}>Finish</label>
+            <select id="nail-texture" className={selectCls} value={safeTexture} onChange={e => setNailTexture(e.target.value)}>
               {textures.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
 
-          {/* Press-on only: shape + length */}
           {isPressOn && (
             <>
-              <div className="field">
-                <label htmlFor="nail-shape">Shape</label>
-                <select id="nail-shape" value={nailShape} onChange={e => setNailShape(e.target.value)}>
-                  {nailShapes.map(s => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="nail-shape" className={labelCls}>Shape</label>
+                <select id="nail-shape" className={selectCls} value={nailShape} onChange={e => setNailShape(e.target.value)}>
+                  {nailShapes.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
-                <p className="field-hint">
+                <p className="text-xs text-gray-400 leading-snug">
                   {nailShapes.find(s => s.value === nailShape)?.description}
                 </p>
               </div>
 
-              <div className="field">
-                <label htmlFor="nail-length">
-                  Length — <span className="length-value">{parseFloat(nailLength).toFixed(1)}x</span>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="nail-length" className={labelCls}>
+                  Length — <span className="font-bold text-gray-900">{parseFloat(nailLength).toFixed(1)}x</span>
                 </label>
                 <input
                   id="nail-length"
                   type="range"
-                  min="0.8"
-                  max="2.15"
-                  step="0.05"
+                  min="0.8" max="2.15" step="0.05"
                   value={nailLength}
                   onChange={e => setNailLength(parseFloat(e.target.value))}
-                  className="length-slider"
+                  className="w-full accent-gray-900 cursor-pointer"
                 />
-                <div className="length-labels">
-                  <span>Short</span>
-                  <span>Natural</span>
-                  <span>Long</span>
+                <div className="flex justify-between text-[11px] text-gray-400 mt-0.5">
+                  <span>Short</span><span>Natural</span><span>Long</span>
                 </div>
               </div>
             </>
@@ -215,11 +201,17 @@ export default function TryOnControls({
         </>
       )}
 
-      <button className="btn-primary" onClick={onApply} disabled={disabled || loading}>
+      <button
+        className="mt-1 px-5 min-h-11 bg-gray-900 text-white rounded-lg text-base font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors"
+        onClick={onApply}
+        disabled={disabled || loading}
+      >
         {loading ? 'Processing…' : 'Apply Try-On'}
       </button>
 
-      {disabled && !loading && <p className="hint">Upload an image to get started.</p>}
+      {disabled && !loading && (
+        <p className="text-xs text-gray-400 text-center">Upload an image to get started.</p>
+      )}
     </div>
   );
 }
