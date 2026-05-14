@@ -72,7 +72,10 @@ export default function NailTryOnPage() {
   useEffect(() => {
     if (step !== 'result' || result || loading || !uploadedFile) return;
     setLoading(true);
-    applyNailTryon(uploadedFile, { nailColor, nailTexture, nailEffectType, nailShape, nailLength })
+    applyNailTryon(uploadedFile, {
+      nailColor, nailTexture, nailEffectType, nailShape, nailLength,
+      transparency, reflection, contrast, roughness, fingers,
+    })
       .then(data => { setResult(data); markComplete('result'); })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));

@@ -13,8 +13,20 @@ const ALL_FINGERS = ['thumb', 'index', 'middle', 'ring', 'pinky'];
 // Press-on nails only support these three textures
 const PRESS_ON_TEXTURES = ['matte', 'cream', 'metallic'];
 
-function buildEffects(effectType, { nailColor, texture, contrast, reflection, roughness, transparency, nailShape, nailLength }) {
-  return ALL_FINGERS.map(finger => {
+function parseFingers(raw) {
+  if (!raw || raw === 'all') return ALL_FINGERS;
+  try {
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.filter(f => ALL_FINGERS.includes(f));
+    }
+  } catch {}
+  return ALL_FINGERS;
+}
+
+function buildEffects(effectType, { nailColor, texture, contrast, reflection, roughness, transparency, nailShape, nailLength, fingers }) {
+  const targetFingers = parseFingers(fingers);
+  return targetFingers.map(finger => {
     if (effectType === 'press_on_nails') {
       const safeTexture = PRESS_ON_TEXTURES.includes(texture) ? texture : 'cream';
       return {
@@ -66,10 +78,11 @@ async function applyNailTryon(req, res, next) {
       effectType   = 'nail_polish',
       contrast     = 50,
       reflection   = 50,
-      roughness    = 50,
+      roughness    = 0,
       transparency = 0,
       nailShape    = 'squoval_oval',
       nailLength   = 1.0,
+      fingers      = 'all',
     } = req.body;
 
     // Nail VTO has a stricter size limit than hair — resize to 1280px at lower quality
@@ -115,7 +128,7 @@ async function applyNailTryon(req, res, next) {
 
     // ── Step 3: Submit nail task (retry up to 3x on 5xx) ────────────────────
     const effects = buildEffects(effectType, {
-      nailColor, texture, contrast, reflection, roughness, transparency, nailShape, nailLength,
+      nailColor, texture, contrast, reflection, roughness, transparency, nailShape, nailLength, fingers,
     });
 
     let taskId;

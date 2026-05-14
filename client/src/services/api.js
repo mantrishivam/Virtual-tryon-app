@@ -43,14 +43,22 @@ export async function applyHairStyleTryon(imageFile, { styleIndex }) {
   }
 }
 
-export async function applyNailTryon(imageFile, { nailColor, nailTexture, nailEffectType, nailShape, nailLength }) {
+export async function applyNailTryon(imageFile, {
+  nailColor, nailTexture, nailEffectType, nailShape, nailLength,
+  transparency = 0, reflection = 50, contrast = 50, roughness = 0, fingers = 'all',
+}) {
   const formData = new FormData();
   formData.append('image', imageFile);
   formData.append('nailColor', nailColor);
   formData.append('texture', nailTexture);
   formData.append('effectType', nailEffectType);
+  formData.append('transparency', String(transparency));
+  formData.append('reflection',   String(reflection));
+  formData.append('contrast',     String(contrast));
+  formData.append('roughness',    String(roughness));
+  formData.append('fingers',      JSON.stringify(fingers));
   if (nailEffectType === 'press_on_nails') {
-    formData.append('nailShape', nailShape);
+    formData.append('nailShape',  nailShape);
     formData.append('nailLength', String(nailLength));
   }
 

@@ -212,7 +212,7 @@ export default function UploadComponent({ feature, onFileSelect, previewUrl }) {
         <div
           ref={cameraContainerRef}
           className="w-full rounded-2xl bg-black relative overflow-hidden"
-          style={{ height: '480px', display: camera.usingSDK ? 'block' : 'none' }}
+          style={{ height: 'clamp(300px, 50svh, 480px)', display: camera.usingSDK ? 'block' : 'none' }}
         />
 
         {/* getUserMedia video (nail) */}
