@@ -13,7 +13,8 @@
       "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"pattern\":{\"name\":\"full\"}}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color)",
       "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"src_file_url\":\"https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg\",\"pattern\":{\"name\":\"full\"},\"color\":\"#8B4513\"}' https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color)",
       "Bash(curl -s -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' https://yce-api-01.makeupar.com/s2s/v2.0/task/nail-vto/4A9ZwctK5adKCd_x698gxEhuJiL_FURzG8NiK0rwhkODzrd85tjCbIalh44pNbuF)",
-      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"files\":[{\"content_type\":\"image/jpeg\",\"file_name\":\"test.jpg\",\"file_size\":100000}]}' https://yce-api-01.makeupar.com/s2s/v2.0/file/hair-color)"
+      "Bash(curl -s -X POST -H 'Authorization: Bearer sk-BWe_8iMmH_WPPE7zNX022DVYMukl_RLnH4rqcK5pK-xFylxVBjmLgK9QUDpsuhb6' -H 'Content-Type: application/json' -d '{\"files\":[{\"content_type\":\"image/jpeg\",\"file_name\":\"test.jpg\",\"file_size\":100000}]}' https://yce-api-01.makeupar.com/s2s/v2.0/file/hair-color)",
+      "Bash(npm install *)"
     ]
   }
 }

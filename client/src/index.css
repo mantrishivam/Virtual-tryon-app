@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-/* SDK overlay — targets DOM elements injected by Perfect Corp Camera Kit */
+/* SDK overlay — hidden by default; shown only when mounted inside its container */
+#YMK-module { display: none; }
+
 #YMK-module,
 #YMK-module > *,
 #YMK-module iframe,
@@ -8,16 +10,6 @@
 #YMK-module video {
   width: 100% !important;
   height: 100% !important;
-}
-
-/* Step-based panel visibility — mobile only (< 768px) */
-@media (max-width: 767px) {
-  [data-step="upload"]    .panel-customize,
-  [data-step="upload"]    .panel-result,
-  [data-step="customize"] .panel-upload,
-  [data-step="customize"] .panel-result,
-  [data-step="result"]    .panel-upload,
-  [data-step="result"]    .panel-customize { display: none; }
 }
 
 /* Loading spinner — custom keyframe animation */

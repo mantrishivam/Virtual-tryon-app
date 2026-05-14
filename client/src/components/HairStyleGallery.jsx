@@ -1,28 +1,43 @@
 import hairStyles from '../data/hairStyles';
 
-const difficultyClasses = {
-  easy:    'bg-green-100 text-green-800',
-  medium:  'bg-yellow-100 text-yellow-800',
-  complex: 'bg-red-100 text-red-800',
-};
-
-export default function HairStyleGallery({ selectedId, onSelect }) {
+export default function HairStyleGallery({ selectedId, onSelect, scrollable = true }) {
   return (
-    <div className="grid grid-cols-3 gap-2 max-h-[340px] overflow-y-auto pr-1">
-      {hairStyles.map(style => (
-        <div
-          key={style.index}
-          className={`cursor-pointer border-2 rounded-lg overflow-hidden flex flex-col transition-colors hover:border-gray-400 bg-gray-100 ${selectedId === style.index ? 'border-gray-900' : 'border-transparent'}`}
-          onClick={() => onSelect(style)}
-          title={style.name}
-        >
-          <img src={style.image} alt={style.name} loading="lazy" className="w-full aspect-3/4 object-cover block" />
-          <span className="text-[11px] text-center px-1 py-0.5 text-gray-600 truncate bg-white">{style.name}</span>
-          <span className={`text-[10px] text-center px-1 py-0.5 font-semibold tracking-wide ${difficultyClasses[style.difficulty.toLowerCase()] || 'bg-gray-100 text-gray-600'}`}>
-            {style.difficulty}
-          </span>
-        </div>
-      ))}
+    <div className={`grid grid-cols-3 md:grid-cols-4 gap-2.5 md:gap-3 ${scrollable ? 'max-h-80 overflow-y-auto pr-0.5' : ''}`}>
+      {hairStyles.map(style => {
+        const isSelected = selectedId === style.index;
+        return (
+          <div
+            key={style.index}
+            className="relative cursor-pointer rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.03]"
+            style={{
+              aspectRatio: '3/4',
+              boxShadow: isSelected
+                ? '0 0 0 2.5px #F0E4EC, 0 8px 24px rgba(44,12,26,0.18)'
+                : '0 2px 10px rgba(44,12,26,0.1)',
+            }}
+            onClick={() => onSelect(style)}
+          >
+            <img
+              src={style.image}
+              alt={style.name}
+              className="w-full h-full object-contain block"
+              loading="lazy"
+            />
+            {/* Selected overlay */}
+            {isSelected && (
+              <>
+                <div className="absolute inset-0" style={{ background: 'rgba(26,8,16,0.35)' }} />
+                <div
+                  className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black"
+                  style={{ background: '#F0E4EC', color: '#260B18' }}
+                >
+                  ✓
+                </div>
+              </>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

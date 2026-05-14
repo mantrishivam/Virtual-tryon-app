@@ -18,19 +18,20 @@ function buildEffects(effectType, { nailColor, texture, contrast, reflection, ro
     if (effectType === 'press_on_nails') {
       const safeTexture = PRESS_ON_TEXTURES.includes(texture) ? texture : 'cream';
       return {
-        sub_type:   'color',
+        sub_type:     'color',
         finger,
-        shape:      nailShape || 'squoval_oval',
-        length:     parseFloat(nailLength) || 1.0,
-        color:      nailColor,
-        texture:    safeTexture,
-        reflection: parseInt(reflection, 10),
-        contrast:   parseInt(contrast, 10),
-        roughness:  parseInt(roughness, 10),
+        color:        nailColor,
+        texture:      safeTexture,
+        transparency: parseInt(transparency, 10),
+        reflection:   parseInt(reflection, 10),
+        contrast:     parseInt(contrast, 10),
+        roughness:    parseInt(roughness, 10),
+        length:       parseFloat(nailLength) || 1.0,
+        shape:        nailShape || 'squoval_oval',
       };
     }
     // nail_polish
-    return {
+    const effect = {
       sub_type:     'color',
       finger,
       color:        nailColor,
@@ -40,6 +41,13 @@ function buildEffects(effectType, { nailColor, texture, contrast, reflection, ro
       roughness:    parseInt(roughness, 10),
       transparency: parseInt(transparency, 10),
     };
+    if (texture === 'shimmer_fine' || texture === 'shimmer_coarse') {
+      effect.shimmer_opacity = 80;
+      effect.shimmer_size    = texture === 'shimmer_fine' ? 2 : 5;
+    } else if (texture === 'textured') {
+      effect.textured_size = 3;
+    }
+    return effect;
   });
 }
 
@@ -64,8 +72,8 @@ async function applyNailTryon(req, res, next) {
       nailLength   = 1.0,
     } = req.body;
 
-    // Normalize + auto-resize to stay within Perfect Corp's 2048px long-side limit
-    const file = await normalizeToJpeg(req.file);
+    // Nail VTO has a stricter size limit than hair — resize to 1280px at lower quality
+    const file = await normalizeToJpeg(req.file, { maxDimension: 1280, quality: 80, maxBytes: 900_000 });
 
     // ── Step 1: Get pre-signed S3 upload URL ────────────────────────────────
     const uploadMetaRes = await axios.post(
@@ -115,7 +123,7 @@ async function applyNailTryon(req, res, next) {
       try {
         const taskRes = await axios.post(
           `${BASE_URL}/s2s/v2.0/task/nail-vto`,
-          { src_file_id: fileId, effect_type: effectType, version: '1.0', effects },
+          { src_file_id: fileId, effect_type: effectType, version: '1.0', ref_file_ids: [], effects },
           { headers: authHeaders({ 'Content-Type': 'application/json' }), timeout: 15000 }
         );
         taskId = taskRes.data?.data?.task_id;
